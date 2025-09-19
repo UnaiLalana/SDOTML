@@ -1,3 +1,6 @@
-/data/raw
+/data/raw/train_data
+/data/raw/train_data.zip
+/data/raw/train.csv
 /data/interim/initial_data
 /.DS_Store
+/my_project/__pycache__
