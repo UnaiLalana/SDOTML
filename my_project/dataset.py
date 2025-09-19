@@ -5,6 +5,10 @@ import shutil
 import zipfile
 import cv2
 import numpy as np
+import torch
+from torchvision import datasets, transforms
+from torch.utils.data import random_split, DataLoader
+from PIL import Image
 
 
 def load_data_from_zip(output_dir):
@@ -21,13 +25,28 @@ def read_dataset(dataset_dir):
     df = pd.read_csv(os.path.join(dataset_dir + ".csv"))
     X = []
     y = []
+
+    transform = transforms.Compose([
+        transforms.Resize((256, 256)), 
+        transforms.ToTensor(),
+        transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5))
+    ])
+    
     for _, row in df.iterrows():
         img = os.path.join(dataset_dir, row['file_name'].replace('train_data/', ''))
         if img is not None:
-            X.append(img)
+            img_cv = cv2.imread(img)       
+            img_cv = cv2.cvtColor(img_cv, cv2.COLOR_BGR2RGB)
+
+            img_pil = Image.fromarray(img_cv)
+
+            img_tensor = transform(img_pil)
+
+            X.append(img_tensor)
             y.append(row['label'])
-    X = np.array(X)
-    y = np.array(y)
+            
+    X = torch.stack(X)
+    y = torch.tensor(y, dtype=torch.long)
     return X, y
 
 

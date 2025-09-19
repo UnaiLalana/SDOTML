@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 import dataset
+from torch.utils.data import random_split
 
 class Net(nn.Module):
     def __init__(self):
@@ -11,9 +12,9 @@ class Net(nn.Module):
         self.conv1 = nn.Conv2d(3, 6, 5)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
+        self.fc1 = nn.Linear(16 * 61 * 61, 120)
         self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
+        self.fc3 = nn.Linear(84, 2)
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
@@ -27,14 +28,7 @@ class Net(nn.Module):
 
 net = Net()
 
-X,y = dataset.read_dataset("../data/interim/initial_data")
-'''
-Hay que obtener las imagenes a partir de los directorios (cuidado con el tamaño de las imagenes!!!)
-y transformar a tensores
-Tambien habria que hacer train/test splits
-'''
-X_tensor = torch.tensor(X, dtype=torch.float32)
-y_tensor = torch.tensor(y, dtype=torch.long)
+X_tensor, y_tensor = dataset.read_dataset("../data/interim/initial_data")
 
 class ImageDataset(Dataset):
     def __init__(self, images, labels):
@@ -47,15 +41,21 @@ class ImageDataset(Dataset):
     def __getitem__(self, idx):
         return self.images[idx], self.labels[idx]
 
+dataset_full = ImageDataset(X_tensor, y_tensor)
+train_size = int(0.8 * len(dataset_full))
+test_size = len(dataset_full) - train_size
+train_dataset, test_dataset = random_split(dataset_full, [train_size, test_size])
+        
+
 batch_size = 32
 
-train_dataset = ImageDataset(X_tensor, y_tensor)
 trainloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+testloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-for epoch in range(2): 
+for epoch in range(10): 
 
     running_loss = 0.0
     for i, data in enumerate(trainloader, 0):
@@ -68,9 +68,25 @@ for epoch in range(2):
         loss.backward()
         optimizer.step()
 
-        running_loss += loss.item()
-        if i % 2000 == 1999:   
-            print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / 2000:.3f}')
-            running_loss = 0.0
+        running_loss += loss.item()  
+    print(f"Epoch {epoch+1}, Loss: {running_loss/len(trainloader):.4f}")
+
 
 print('Finished Training')
+
+def evaluate(model, dataloader):
+    model.eval()
+    correct, total = 0, 0
+    with torch.no_grad():
+        for inputs, labels in dataloader:
+            outputs = model(inputs)
+            _, predicted = torch.max(outputs, 1)   # clase con mayor probabilidad
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
+    return correct / total
+
+train_acc = evaluate(net, trainloader)
+test_acc = evaluate(net, testloader)
+
+print(f"Train Accuracy: {train_acc:.4f}")
+print(f"Test Accuracy: {test_acc:.4f}")
