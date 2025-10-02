@@ -12,10 +12,59 @@ from PIL import Image
 
 
 def load_data_from_zip(output_dir):
+    """
+    Extracts the contents of a ZIP file into a specified output directory.
+
+    This function takes a path (without the `.zip` extension), opens the corresponding 
+    ZIP file, and extracts all its contents into the given output directory.
+
+    Args:
+        output_dir (str): Path to the directory where the ZIP file will be extracted.
+            The function expects a file named ``<output_dir>.zip`` to exist.
+
+    Returns:
+        None
+
+    Example:
+        >>> # Suppose you have 'data.zip' in your working directory
+        >>> load_data_from_zip("data")
+        >>> # This extracts the contents of 'data.zip' into the folder './data'
+    """
     with zipfile.ZipFile(output_dir+'.zip', 'r') as zipf:
             zipf.extractall(output_dir)
 
 def read_dataset(dataset_dir):
+    """
+    Loads an image dataset from a directory and its corresponding CSV file.
+
+    This function expects a dataset directory and a CSV file with the same name
+    (e.g., ``dataset_dir/`` and ``dataset_dir.csv``). The CSV file should contain
+    at least two columns: ``file_name`` (the relative path of each image) and 
+    ``label`` (the class label). 
+
+    If the directory does not exist, the function attempts to extract it from a
+    ZIP file with the same base name (e.g., ``dataset_dir.zip``).
+
+    Each image is read with OpenCV, converted to RGB, transformed into a 
+    PyTorch tensor, resized to (256, 256), and normalized to the range [-1, 1].
+
+    Args:
+        dataset_dir (str): Path to the dataset directory (without `.csv` or `.zip` extension). 
+            Example: ``"./data/train"`` expects:
+                - ``./data/train.csv``
+                - ``./data/train/`` directory with images
+                - optionally ``./data/train.zip`` if the directory is missing.
+
+    Returns:
+        tuple:
+            - X (torch.Tensor): Tensor of shape (N, 3, 256, 256) containing N images.
+            - y (torch.Tensor): Tensor of shape (N,) containing integer labels.
+
+    Example:
+        >>> X, y = read_dataset("./data/train")
+        >>> print(X.shape, y.shape)
+        torch.Size([1000, 3, 256, 256]) torch.Size([1000])
+    """
 
     if not os.path.exists(dataset_dir):
         print("No existe el directorio con las imagenes:", dataset_dir)

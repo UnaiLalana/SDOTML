@@ -6,10 +6,45 @@ from torch.utils.data import Dataset, DataLoader
 import dataset
 from torch.utils.data import random_split
 import numpy as np
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from models.net import Net
 
 
 
 class ImageDataset(Dataset):
+    """
+    Custom PyTorch Dataset for handling images and their corresponding labels.
+
+    This dataset wrapper stores image tensors and their labels, providing
+    indexing and length operations compatible with PyTorch's ``DataLoader``.
+
+    Args:
+        images (array-like or torch.Tensor): Collection of images. Each element 
+            is expected to be a tensor or array representing an image.
+        labels (array-like or torch.Tensor): Collection of labels corresponding 
+            to each image.
+
+    Attributes:
+        images (array-like or torch.Tensor): Stored image data.
+        labels (array-like or torch.Tensor): Stored labels for the images.
+
+    Example:
+        >>> import torch
+        >>> from torch.utils.data import DataLoader
+        >>> from dataset import ImageDataset
+        >>> images = torch.randn(100, 3, 64, 64)  # 100 RGB images of size 64x64
+        >>> labels = torch.randint(0, 2, (100,))  # binary labels
+        >>> dataset = ImageDataset(images, labels)
+        >>> dataloader = DataLoader(dataset, batch_size=16, shuffle=True)
+        >>> for batch_images, batch_labels in dataloader:
+        ...     print(batch_images.shape, batch_labels.shape)
+        torch.Size([16, 3, 64, 64]) torch.Size([16])
+    """
+    
     def __init__(self, images, labels):
         self.images = images
         self.labels = labels
@@ -20,27 +55,43 @@ class ImageDataset(Dataset):
     def __getitem__(self, idx):
         return self.images[idx], self.labels[idx]
 
-class Net(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 61 * 61, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 2)
 
-    def forward(self, x):
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = torch.flatten(x, 1) 
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x
 
 
 def train(path):
+    """
+    Trains a neural network model on image data from a given directory path.
+
+    This function loads the dataset from the specified path, splits it into
+    training and testing sets, and trains a neural network model using
+    cross-entropy loss and stochastic gradient descent (SGD). It also evaluates
+    the model on the test set, collecting metrics such as accuracy, predicted
+    labels, probabilities, and per-sample losses.
+
+    Args:
+        path (str): Path of the directory where the dataset is stored. The path
+            should be compatible with ``dataset.read_dataset(path)`` to return
+            tensors for features (X) and labels (y).
+
+    Returns:
+        tuple:
+            - train_losses (list[float]): Training loss per epoch.
+            - train_accs (list[float]): Training accuracy per epoch.
+            - y_true (list[int]): True labels from the test dataset.
+            - y_pred (list[int]): Predicted labels from the test dataset.
+            - losses (list[float]): Per-sample loss values on the test set.
+            - images (list[numpy.ndarray]): Input images from the test dataset.
+            - labels_list (list[int]): True labels from the test dataset (redundant with y_true).
+            - preds (list[int]): Predicted labels from the test dataset (redundant with y_pred).
+            - probs (list[float]): Predicted probabilities for the positive class (class index 1).
+            - true_labels (list[int]): True labels corresponding to ``probs``.
+
+    Example:
+        >>> from myproject.training import train
+        >>> results = train(model, "./data/images")
+        >>> train_losses, train_accs, y_true, y_pred, *_ = results
+        >>> print(f"Final accuracy: {train_accs[-1]:.2f}")
+    """
     net = Net()
 
     X_tensor, y_tensor = dataset.read_dataset(path)
