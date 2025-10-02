@@ -5,4 +5,5 @@
 /.DS_Store
 /my_project/__pycache__
 .ipynb_checkpoints/
-**/.ipynb_checkpoints/
+/notebooks/.ipynb_checkpoints
+/my_project/.ipynb_checkpoints
