@@ -3,15 +3,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
-import dataset
+from . import dataset
+from .net import Net
 from torch.utils.data import random_split
 import numpy as np
 import sys
 import os
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from models.net import Net
 
 
 
