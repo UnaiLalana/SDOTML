@@ -4,3 +4,5 @@
 /data/interim/initial_data
 /.DS_Store
 /my_project/__pycache__
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
