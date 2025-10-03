@@ -25,11 +25,28 @@ SDOTML/
 |   |   ├── Initial_data.zip
 |   |   └── Initial_data.csv
 |   └── processed/
-├── notebooks/        
+├── docs/
+|   └── my_project/
+|       ├── index.html
+|       ├── datase.html
+|       ├── net.html
+|       └── train.html
+├── notebooks/
+|   ├── data_exploration.ipynb
+|   └── performance_analysis.ipynb        
 ├── models/
 ├── reports/
+|   ├── figures/
+|   |   ├── Figure_1.png
+|   |   ├── Figure_2.png
+|   |   ├── Figure_3.png
+|   |   ├── Figure_4.png
+|   |   ├── Figure_5.png
+|   |   └── Figure_6.png
+|   └──Visualizaton_Report_SDOTML.pdf     
 ├── my_project/
 |   ├── dataset.py
+|   ├── net.py
 |   └── train.py
 ├── README.md
 ├── pyproject.toml
