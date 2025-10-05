@@ -66,8 +66,8 @@ Some folders might have .gitkeep placeholder files.
 
 ## Running the Training Script
 
-To execute the main training script using [uv](https://github.com/astral-sh/uv):
+To execute the performance analysis notebook using [uv](https://github.com/astral-sh/uv):
 
 ```bash
-uv run src/train.py #In the my_project folder
+uv run --with jupyter jupyter lab
 ```
