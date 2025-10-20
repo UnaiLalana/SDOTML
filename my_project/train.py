@@ -3,12 +3,15 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
-from . import dataset
-from .net import Net
 from torch.utils.data import random_split
 import numpy as np
 import sys
 import os
+
+sys.path.append(os.path.dirname(__file__)) 
+import dataset
+from net import Net
+
 
 
 
@@ -55,7 +58,7 @@ class ImageDataset(Dataset):
 
 
 
-def train(path):
+def train(path, epochs=2, lr=0.001, batch_size=32):
     """
     Trains a neural network model on image data from a given directory path.
 
@@ -99,18 +102,16 @@ def train(path):
     train_dataset, test_dataset = random_split(dataset_full, [train_size, test_size])
             
 
-    batch_size = 32
-
     trainloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     testloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+    optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9)
 
     train_losses = []
     train_accs = []
 
-    for epoch in range(10):
+    for epoch in range(epochs):
         running_loss = 0.0
         correct, total = 0, 0
         net.train()
@@ -166,7 +167,7 @@ def train(path):
             probs.extend(probs_batch.numpy())
             true_labels.extend(labels.numpy())
             
-    return train_losses, train_accs, y_true, y_pred, losses, images, labels_list, preds, probs, true_labels
+    return train_losses, train_accs, y_true, y_pred, losses, images, labels_list, preds, probs, true_labels, net
 
 
 
