@@ -1,3 +1,28 @@
+"""
+dataset.py
+----------
+
+Provides utilities for loading, preprocessing, and managing image datasets used in
+the AI vs. Human image classification project.
+
+This module includes:
+    - Functions for reading datasets from directories or ZIP archives.
+    - Data preprocessing (resizing, normalization, and tensor conversion).
+    - A custom PyTorch ``Dataset`` class for convenient integration with ``DataLoader``.
+
+It expects each dataset to include:
+    - A CSV file containing image paths and labels (e.g., ``train.csv``).
+    - A directory containing the corresponding image files (e.g., ``train/``).
+    - Optionally, a ZIP archive (e.g., ``train.zip``) that will be extracted automatically
+      if the dataset directory is missing.
+
+Typical usage example:
+    >>> from dataset import read_dataset, ImageDataset
+    >>> X, y = read_dataset("./data/interim/initial_data")
+    >>> dataset = ImageDataset(X, y)
+    >>> print(len(dataset))
+    1000
+"""
 import pandas as pd
 import sys
 import os

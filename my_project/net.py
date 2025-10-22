@@ -1,3 +1,26 @@
+"""
+net.py
+------
+
+Defines the convolutional neural network (CNN) architecture used for binary
+image classification between AI-generated and human-created images.
+
+This module contains a single class, ``Net``, which implements a compact CNN
+built with PyTorch. The architecture includes convolutional, pooling, and
+fully connected layers, designed to handle RGB images and produce two output
+logits (one for each class). It is compatible with the training loop defined
+in ``train.py``.
+
+Typical usage example:
+    >>> from net import Net
+    >>> import torch
+    >>> model = Net()
+    >>> dummy_input = torch.randn(1, 3, 256, 256)  # batch of 1, RGB image
+    >>> output = model(dummy_input)
+    >>> print(output.shape)
+    torch.Size([1, 2])
+"""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

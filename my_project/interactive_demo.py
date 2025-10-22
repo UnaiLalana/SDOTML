@@ -1,3 +1,23 @@
+"""
+gradio_app.py
+-------------
+
+Interactive Gradio interface for exploring, training, and evaluating an
+AI-vs-human image classification model.
+
+This module provides:
+- A data exploration interface to visualize sample images from the dataset.
+- A training interface to configure and train a neural network model.
+- An evaluation interface to display performance metrics such as accuracy and
+  confusion matrix.
+
+It uses the ``train`` module for model training and ``dataset`` for data loading.
+
+Example:
+    Run this script directly to launch the interactive Gradio demo:
+        >>> python gradio_app.py
+"""
+
 import gradio as gr
 import torch
 import torch.nn as nn
@@ -21,6 +41,19 @@ DATA_DIR = os.path.join(BASE_DIR, "../data/interim/initial_data")
 
 
 def show_random_images(num_images):
+    """
+    Displays a set of random images from the dataset with their labels.
+
+    Randomly selects a specified number of samples from the dataset and
+    visualizes them using Matplotlib. Each image is labeled as either
+    "Human-created" (label 0) or "AI-generated" (label 1).
+
+    Args:
+        num_images (int): Number of images to display.
+
+    Returns:
+        matplotlib.figure.Figure: A Matplotlib figure containing the displayed images.
+    """
     X, y = dataset.read_dataset(DATA_DIR) 
     idx = np.random.choice(len(X), num_images, replace=False)
     
@@ -44,6 +77,21 @@ y_true_test = None
 y_pred_test = None
 
 def train_model(epochs, lr, batch_size):
+    """
+    Trains the neural network model using the provided hyperparameters.
+
+    This function calls ``train.train()`` to execute the training loop and
+    stores the trained model and evaluation results for later use in the
+    evaluation tab.
+
+    Args:
+        epochs (int): Number of epochs to train the model.
+        lr (float): Learning rate for the optimizer.
+        batch_size (int): Batch size used during training.
+
+    Returns:
+        str: Summary text containing the final loss and accuracy from training.
+    """
     global trained_model, y_true_test, y_pred_test
     train_losses, train_accs, y_true, y_pred, _, _, _, _, _, _, net = train.train(DATA_DIR, epochs=epochs, lr=lr, batch_size=batch_size)
     
@@ -53,6 +101,16 @@ def train_model(epochs, lr, batch_size):
     return f"Training completed. Last loss: {train_losses[-1]:.4f}, last accuracy: {train_accs[-1]:.4f}"
 
 def evaluate_model():
+    """
+    Evaluates the performance of the trained model on the test dataset.
+
+    Displays a confusion matrix heatmap and computes overall test accuracy.
+
+    Returns:
+        tuple:
+            - fig (matplotlib.figure.Figure): Confusion matrix visualization.
+            - eval_text (str): Text summary containing the test accuracy.
+    """
     if trained_model is None:
         return None, "No trained model yet"
 

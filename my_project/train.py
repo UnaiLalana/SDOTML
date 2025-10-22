@@ -1,3 +1,22 @@
+"""
+train.py
+--------
+
+Module responsible for training a neural network classifier that distinguishes
+between AI-generated and human-created images.
+
+This module defines the main ``train`` function, which loads image data, splits
+it into training and test sets, trains a convolutional neural network (defined
+in ``net.py``), and evaluates its performance. It returns key training metrics,
+predictions, and probability scores for further analysis and visualization.
+
+Typical usage example:
+    >>> from train import train
+    >>> results = train("./data/interim/initial_data", epochs=5, lr=0.001, batch_size=32)
+    >>> train_losses, train_accs, y_true, y_pred, *_ = results
+    >>> print(f"Final accuracy: {train_accs[-1]:.2f}")
+"""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

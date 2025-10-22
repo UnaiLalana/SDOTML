@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.6">
-<title>my_project.net API documentation</title>
-<meta name="description" content="net.py
+<title>my_project.interactive_demo API documentation</title>
+<meta name="description" content="gradio_app.py
 …">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
@@ -34,181 +34,186 @@ el.replaceWith(d);
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>my_project.net</code></h1>
+<h1 class="title">Module <code>my_project.interactive_demo</code></h1>
 </header>
 <section id="section-intro">
-<h2 id="netpy">net.py</h2>
-<p>Defines the convolutional neural network (CNN) architecture used for binary
-image classification between AI-generated and human-created images.</p>
-<p>This module contains a single class, <code><a title="my_project.net.Net" href="#my_project.net.Net">Net</a></code>, which implements a compact CNN
-built with PyTorch. The architecture includes convolutional, pooling, and
-fully connected layers, designed to handle RGB images and produce two output
-logits (one for each class). It is compatible with the training loop defined
-in <code>train.py</code>.</p>
-<p>Typical usage example:
-&gt;&gt;&gt; from net import Net
-&gt;&gt;&gt; import torch
-&gt;&gt;&gt; model = Net()
-&gt;&gt;&gt; dummy_input = torch.randn(1, 3, 256, 256)
-# batch of 1, RGB image
-&gt;&gt;&gt; output = model(dummy_input)
-&gt;&gt;&gt; print(output.shape)
-torch.Size([1, 2])</p>
+<h2 id="gradio_apppy">gradio_app.py</h2>
+<p>Interactive Gradio interface for exploring, training, and evaluating an
+AI-vs-human image classification model.</p>
+<p>This module provides:
+- A data exploration interface to visualize sample images from the dataset.
+- A training interface to configure and train a neural network model.
+- An evaluation interface to display performance metrics such as accuracy and
+confusion matrix.</p>
+<p>It uses the <code>train</code> module for model training and <code>dataset</code> for data loading.</p>
+<h2 id="example">Example</h2>
+<p>Run this script directly to launch the interactive Gradio demo:
+&gt;&gt;&gt; python gradio_app.py</p>
 </section>
 <section>
 </section>
 <section>
 </section>
 <section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="my_project.net.Net"><code class="flex name class">
-<span>class <span class="ident">Net</span></span>
+<dt id="my_project.interactive_demo.evaluate_model"><code class="name flex">
+<span>def <span class="ident">evaluate_model</span></span>(<span>)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Net(nn.Module):
+<pre><code class="python">def evaluate_model():
     &#34;&#34;&#34;
-    Convolutional Neural Network (CNN) for binary image classification.
+    Evaluates the performance of the trained model on the test dataset.
 
-    The network consists of:
-        - Two convolutional layers (with ReLU + MaxPooling).
-        - Three fully connected layers.
-        - A final linear layer that outputs logits for 2 classes.
+    Displays a confusion matrix heatmap and computes overall test accuracy.
 
-    Architecture:
-        Input (3 channels) → Conv2d(3, 6, 5) → ReLU → MaxPool(2,2) →
-        Conv2d(6, 16, 5) → ReLU → MaxPool(2,2) →
-        Flatten →
-        Linear(16 * 61 * 61 → 120) → ReLU →
-        Linear(120 → 84) → ReLU →
-        Linear(84 → 2).
+    Returns:
+        tuple:
+            - fig (matplotlib.figure.Figure): Confusion matrix visualization.
+            - eval_text (str): Text summary containing the test accuracy.
+    &#34;&#34;&#34;
+    if trained_model is None:
+        return None, &#34;No trained model yet&#34;
+
+    # Usa las métricas de test guardadas
+    cm = confusion_matrix(y_true_test, y_pred_test)
+    fig, ax = plt.subplots(figsize=(5,5))
+    sns.heatmap(cm, annot=True, fmt=&#34;d&#34;, ax=ax, cmap=&#34;Blues&#34;)
+    ax.set_xlabel(&#34;Predicted&#34;)
+    ax.set_ylabel(&#34;True&#34;)
+    ax.set_title(&#34;Confusion Matrix&#34;)
+    
+    acc = accuracy_score(y_true_test, y_pred_test)
+    eval_text = f&#34;Accuracy on test: {acc:.4f}&#34;
+    
+    return fig, eval_text</code></pre>
+</details>
+<div class="desc"><p>Evaluates the performance of the trained model on the test dataset.</p>
+<p>Displays a confusion matrix heatmap and computes overall test accuracy.</p>
+<h2 id="returns">Returns</h2>
+<p>tuple:
+- fig (matplotlib.figure.Figure): Confusion matrix visualization.
+- eval_text (str): Text summary containing the test accuracy.</p></div>
+</dd>
+<dt id="my_project.interactive_demo.show_random_images"><code class="name flex">
+<span>def <span class="ident">show_random_images</span></span>(<span>num_images)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def show_random_images(num_images):
+    &#34;&#34;&#34;
+    Displays a set of random images from the dataset with their labels.
+
+    Randomly selects a specified number of samples from the dataset and
+    visualizes them using Matplotlib. Each image is labeled as either
+    &#34;Human-created&#34; (label 0) or &#34;AI-generated&#34; (label 1).
 
     Args:
-        nn.Module (torch.nn.Module): Base class for PyTorch models.
+        num_images (int): Number of images to display.
 
-    Attributes:
-        conv1 (nn.Conv2d): First convolutional layer (3 input channels, 6 output channels, 5x5 kernel).
-        pool (nn.MaxPool2d): Max pooling layer with 2x2 kernel and stride 2.
-        conv2 (nn.Conv2d): Second convolutional layer (6 input channels, 16 output channels, 5x5 kernel).
-        fc1 (nn.Linear): Fully connected layer mapping 16 * 61 * 61 features to 120.
-        fc2 (nn.Linear): Fully connected layer mapping 120 to 84.
-        fc3 (nn.Linear): Final fully connected layer mapping 84 to 2 output classes.
-
-    Example:
-        &gt;&gt;&gt; import torch
-        &gt;&gt;&gt; from models.net import Net
-        &gt;&gt;&gt; model = Net()
-        &gt;&gt;&gt; dummy_input = torch.randn(1, 3, 256, 256)  # batch of 1, 3 channels, 256x256 image
-        &gt;&gt;&gt; output = model(dummy_input)
-        &gt;&gt;&gt; print(output.shape)
-        torch.Size([1, 2])
+    Returns:
+        matplotlib.figure.Figure: A Matplotlib figure containing the displayed images.
     &#34;&#34;&#34;
+    X, y = dataset.read_dataset(DATA_DIR) 
+    idx = np.random.choice(len(X), num_images, replace=False)
     
-    def __init__(self):
-        super().__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 61 * 61, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 2)
-
-    def forward(self, x):
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = torch.flatten(x, 1) 
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x</code></pre>
+    fig, axes = plt.subplots(1, num_images, figsize=(num_images*3, 3))
+    if num_images == 1:
+        axes = [axes]
+    for i, ax in enumerate(axes):
+        img = X[idx[i]].permute(1, 2, 0).numpy()
+        img = (img * 0.5 + 0.5)  
+        ax.imshow(img)
+        if y[idx[i]].item() == 0:
+            ax.set_title(f&#34;Label: {y[idx[i]].item()}, Human-created&#34;)
+        else:
+            ax.set_title(f&#34;Label: {y[idx[i]].item()}, AI-generated&#34;)
+        ax.axis(&#34;off&#34;)
+    plt.tight_layout()
+    return fig</code></pre>
 </details>
-<div class="desc"><p>Convolutional Neural Network (CNN) for binary image classification.</p>
-<p>The network consists of:
-- Two convolutional layers (with ReLU + MaxPooling).
-- Three fully connected layers.
-- A final linear layer that outputs logits for 2 classes.</p>
-<h2 id="architecture">Architecture</h2>
-<p>Input (3 channels) → Conv2d(3, 6, 5) → ReLU → MaxPool(2,2) →
-Conv2d(6, 16, 5) → ReLU → MaxPool(2,2) →
-Flatten →
-Linear(16 * 61 * 61 → 120) → ReLU →
-Linear(120 → 84) → ReLU →
-Linear(84 → 2).</p>
+<div class="desc"><p>Displays a set of random images from the dataset with their labels.</p>
+<p>Randomly selects a specified number of samples from the dataset and
+visualizes them using Matplotlib. Each image is labeled as either
+"Human-created" (label 0) or "AI-generated" (label 1).</p>
 <h2 id="args">Args</h2>
-<p>nn.Module (torch.nn.Module): Base class for PyTorch models.</p>
-<h2 id="attributes">Attributes</h2>
 <dl>
-<dt><strong><code>conv1</code></strong> :&ensp;<code>nn.Conv2d</code></dt>
-<dd>First convolutional layer (3 input channels, 6 output channels, 5x5 kernel).</dd>
-<dt><strong><code>pool</code></strong> :&ensp;<code>nn.MaxPool2d</code></dt>
-<dd>Max pooling layer with 2x2 kernel and stride 2.</dd>
-<dt><strong><code>conv2</code></strong> :&ensp;<code>nn.Conv2d</code></dt>
-<dd>Second convolutional layer (6 input channels, 16 output channels, 5x5 kernel).</dd>
-<dt><strong><code>fc1</code></strong> :&ensp;<code>nn.Linear</code></dt>
-<dd>Fully connected layer mapping 16 * 61 * 61 features to 120.</dd>
-<dt><strong><code>fc2</code></strong> :&ensp;<code>nn.Linear</code></dt>
-<dd>Fully connected layer mapping 120 to 84.</dd>
-<dt><strong><code>fc3</code></strong> :&ensp;<code>nn.Linear</code></dt>
-<dd>Final fully connected layer mapping 84 to 2 output classes.</dd>
+<dt><strong><code>num_images</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of images to display.</dd>
 </dl>
-<h2 id="example">Example</h2>
-<pre><code class="language-python-repl">&gt;&gt;&gt; import torch
-&gt;&gt;&gt; from models.net import Net
-&gt;&gt;&gt; model = Net()
-&gt;&gt;&gt; dummy_input = torch.randn(1, 3, 256, 256)  # batch of 1, 3 channels, 256x256 image
-&gt;&gt;&gt; output = model(dummy_input)
-&gt;&gt;&gt; print(output.shape)
-torch.Size([1, 2])
-</code></pre>
-<p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p></div>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>torch.nn.modules.module.Module</li>
-</ul>
-<h3>Methods</h3>
+<h2 id="returns">Returns</h2>
 <dl>
-<dt id="my_project.net.Net.forward"><code class="name flex">
-<span>def <span class="ident">forward</span></span>(<span>self, x) ‑> Callable[..., Any]</span>
+<dt><code>matplotlib.figure.Figure</code></dt>
+<dd>A Matplotlib figure containing the displayed images.</dd>
+</dl></div>
+</dd>
+<dt id="my_project.interactive_demo.train_model"><code class="name flex">
+<span>def <span class="ident">train_model</span></span>(<span>epochs, lr, batch_size)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def forward(self, x):
-    x = self.pool(F.relu(self.conv1(x)))
-    x = self.pool(F.relu(self.conv2(x)))
-    x = torch.flatten(x, 1) 
-    x = F.relu(self.fc1(x))
-    x = F.relu(self.fc2(x))
-    x = self.fc3(x)
-    return x</code></pre>
+<pre><code class="python">def train_model(epochs, lr, batch_size):
+    &#34;&#34;&#34;
+    Trains the neural network model using the provided hyperparameters.
+
+    This function calls ``train.train()`` to execute the training loop and
+    stores the trained model and evaluation results for later use in the
+    evaluation tab.
+
+    Args:
+        epochs (int): Number of epochs to train the model.
+        lr (float): Learning rate for the optimizer.
+        batch_size (int): Batch size used during training.
+
+    Returns:
+        str: Summary text containing the final loss and accuracy from training.
+    &#34;&#34;&#34;
+    global trained_model, y_true_test, y_pred_test
+    train_losses, train_accs, y_true, y_pred, _, _, _, _, _, _, net = train.train(DATA_DIR, epochs=epochs, lr=lr, batch_size=batch_size)
+    
+    trained_model = True  
+    y_pred_test = y_pred
+    y_true_test = y_true
+    return f&#34;Training completed. Last loss: {train_losses[-1]:.4f}, last accuracy: {train_accs[-1]:.4f}&#34;</code></pre>
 </details>
-<div class="desc"><p>Define the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the :class:<code>Module</code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div></div>
+<div class="desc"><p>Trains the neural network model using the provided hyperparameters.</p>
+<p>This function calls <code>train.train()</code> to execute the training loop and
+stores the trained model and evaluation results for later use in the
+evaluation tab.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>epochs</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of epochs to train the model.</dd>
+<dt><strong><code>lr</code></strong> :&ensp;<code>float</code></dt>
+<dd>Learning rate for the optimizer.</dd>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code></dt>
+<dd>Batch size used during training.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>Summary text containing the final loss and accuracy from training.</dd>
+</dl></div>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
 <div class="toc">
 <ul>
-<li><a href="#netpy">net.py</a></li>
+<li><a href="#gradio_apppy">gradio_app.py</a></li>
 </ul>
 </div>
 <ul id="index">
@@ -217,14 +222,11 @@ registered hooks while the latter silently ignores them.</p>
 <li><code><a title="my_project" href="index.html">my_project</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="my_project.net.Net" href="#my_project.net.Net">Net</a></code></h4>
+<li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="my_project.net.Net.forward" href="#my_project.net.Net.forward">forward</a></code></li>
-</ul>
-</li>
+<li><code><a title="my_project.interactive_demo.evaluate_model" href="#my_project.interactive_demo.evaluate_model">evaluate_model</a></code></li>
+<li><code><a title="my_project.interactive_demo.show_random_images" href="#my_project.interactive_demo.show_random_images">show_random_images</a></code></li>
+<li><code><a title="my_project.interactive_demo.train_model" href="#my_project.interactive_demo.train_model">train_model</a></code></li>
 </ul>
 </li>
 </ul>
