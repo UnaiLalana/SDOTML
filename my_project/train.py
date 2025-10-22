@@ -13,51 +13,6 @@ import dataset
 from net import Net
 
 
-
-
-class ImageDataset(Dataset):
-    """
-    Custom PyTorch Dataset for handling images and their corresponding labels.
-
-    This dataset wrapper stores image tensors and their labels, providing
-    indexing and length operations compatible with PyTorch's ``DataLoader``.
-
-    Args:
-        images (array-like or torch.Tensor): Collection of images. Each element 
-            is expected to be a tensor or array representing an image.
-        labels (array-like or torch.Tensor): Collection of labels corresponding 
-            to each image.
-
-    Attributes:
-        images (array-like or torch.Tensor): Stored image data.
-        labels (array-like or torch.Tensor): Stored labels for the images.
-
-    Example:
-        >>> import torch
-        >>> from torch.utils.data import DataLoader
-        >>> from dataset import ImageDataset
-        >>> images = torch.randn(100, 3, 64, 64)  # 100 RGB images of size 64x64
-        >>> labels = torch.randint(0, 2, (100,))  # binary labels
-        >>> dataset = ImageDataset(images, labels)
-        >>> dataloader = DataLoader(dataset, batch_size=16, shuffle=True)
-        >>> for batch_images, batch_labels in dataloader:
-        ...     print(batch_images.shape, batch_labels.shape)
-        torch.Size([16, 3, 64, 64]) torch.Size([16])
-    """
-    
-    def __init__(self, images, labels):
-        self.images = images
-        self.labels = labels
-
-    def __len__(self):
-        return len(self.images)
-
-    def __getitem__(self, idx):
-        return self.images[idx], self.labels[idx]
-
-
-
-
 def train(path, epochs=2, lr=0.001, batch_size=32):
     """
     Trains a neural network model on image data from a given directory path.
@@ -96,7 +51,7 @@ def train(path, epochs=2, lr=0.001, batch_size=32):
 
     X_tensor, y_tensor = dataset.read_dataset(path)
 
-    dataset_full = ImageDataset(X_tensor, y_tensor)
+    dataset_full = dataset.ImageDataset(X_tensor, y_tensor)
     train_size = int(0.8 * len(dataset_full))
     test_size = len(dataset_full) - train_size
     train_dataset, test_dataset = random_split(dataset_full, [train_size, test_size])

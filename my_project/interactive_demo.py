@@ -44,7 +44,7 @@ y_true_test = None
 y_pred_test = None
 
 def train_model(epochs, lr, batch_size):
-    global trained_model
+    global trained_model, y_true_test, y_pred_test
     train_losses, train_accs, y_true, y_pred, _, _, _, _, _, _, net = train.train(DATA_DIR, epochs=epochs, lr=lr, batch_size=batch_size)
     
     trained_model = True  
