@@ -1,0 +1,107 @@
+\documentclass[10pt,a4paper]{article}
+
+% --- Basic packages ---
+\usepackage[utf8]{inputenc}    
+\usepackage[T1]{fontenc}       
+\usepackage[english]{babel}    
+\usepackage{graphicx}          
+\usepackage{caption}           
+\usepackage{subcaption}        
+\usepackage{amsmath, amssymb}  
+\usepackage{geometry}     
+\usepackage{float}
+\geometry{top=2cm, bottom=2cm, left=2cm, right=2cm}
+
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{1ex plus .2ex minus .2ex}{0.5ex}
+\titlespacing*{\subsection}{0pt}{0.8ex plus .2ex minus .2ex}{0.3ex}
+\captionsetup[figure]{skip=2pt, font=small}
+
+\title{\vspace{-1cm}Practice 2: Data Visualization and Performance Analysis \\ 
+\large Software Development Oriented to Machine Learning}
+\author{Eneko Isturitz and Unai Lalana}
+\date{}
+
+\begin{document}
+
+\maketitle
+\vspace{-1cm}
+
+\section{Introduction}
+The aim of this practice is to explore the dataset and analyze the performance of the trained model through visualization. These visualizations help understand class distributions, sample examples, training performance, and model calibration.
+
+\section{Data Exploration}
+The dataset used for this project was sourced from Kaggle.
+https://www.kaggle.com/datasets/alessandrasala79/ai-vs-human-generated-dataset
+We only used the train dataset as it was the only one labeled.
+As we can see in Figure \ref{fig:class_distribution} the selected sub-dataset was completely balanced and made by pair of Human-AI images as visible in Figure \ref{fig:samples_per_class}.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/Figure_1.png}
+        \caption{Distribution of examples per class.}
+        \label{fig:class_distribution}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/Figure_2.png}
+        \caption{Example images from each class.}
+        \label{fig:samples_per_class}
+    \end{subfigure}
+    \caption{Dataset exploration: class distribution and sample images.}
+\end{figure}
+We saw that most of the AI generated images had a slightly brighter intensity so we decided to display the mean image per class, as shown in Figure \ref{fig:mean_images}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figures/Figure_7.png}
+    \caption{Mean image per class.}
+    \label{fig:mean_images}
+\end{figure}
+
+\newpage
+\section{Model Performance Analysis}
+We trained a deep Convolutional Neural Network (CNN) with:
+
+    - Two convolutional layers (with ReLU + MaxPooling).
+    
+    - Three fully connected layers.
+    
+    - A final linear layer that outputs logits for 2 classes.
+
+Observing the Figure \ref{fig:train_loss} we can see that the model is able to train and learn based on the training test. But we have to tried with test set to see if our model is able to generalize or not.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figures/Figure_3.png}
+    \caption{Training Loss and Accuracy over epochs.}
+    \label{fig:train_loss}
+\end{figure}
+After analyzing the confusion matrix in Figure \ref{fig:conf_matrix} and getting an accuracy of 0.785 with the test set, we can indeed say that our model is able to solve the problem.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Figures/Figure_4.png}
+    \caption{Confusion matrix showing model predictions vs. true labels.}
+    \label{fig:conf_matrix}
+\end{figure}
+In the Figure \ref{fig:high_error_samples} we can see the samples with the highest error after test set prediction.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{Figures/Figure_5.png}
+    \caption{Examples of images that the model classified with the highest error.}
+    \label{fig:high_error_samples}
+\end{figure}
+
+\section{Model Calibration Curve}
+Overall, it performs reasonably well but after checking the calibration curve in Figure \ref{fig:calibration_curve} we can see that it could benefit from calibration adjustments.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{Figures/Figure_6.png}
+    \caption{Calibration curve comparing predicted probabilities with actual outcomes.}
+    \label{fig:calibration_curve}
+\end{figure}
+
+\section{Conclusions}
+We have a completely balanced subset of the dataset with classes 0 for real images and 1 for AI generated ones. On the other hand, our model achieves a solid performance even though it tends to predict more examples as class 1 (as seen in Figures 4 and 5)
+
+\end{document}
