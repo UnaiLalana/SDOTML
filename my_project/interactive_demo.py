@@ -92,7 +92,7 @@ def train_model(epochs, lr, batch_size):
     Returns:
         str: Summary text containing the final loss and accuracy from training.
     """
-    global trained_model, y_true_test, y_pred_test
+    global trained_model, y_true_test, y_pred_test, train_losses, train_accs
     train_losses, train_accs, y_true, y_pred, _, _, _, _, _, _, net = train.train(DATA_DIR, epochs=epochs, lr=lr, batch_size=batch_size)
     
     trained_model = True  
