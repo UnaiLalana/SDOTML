@@ -12,6 +12,8 @@ In this project we will create a NN capable of predicting whether an image is AI
 This project (code and demo) is licensed under the [MIT License](./LICENSE).
 
 ## Project Demo
+You can try the online demo in:
+
 https://huggingface.co/spaces/EnekoIsturitz/SDOTML-demo
 
 ## Data Source
@@ -26,10 +28,6 @@ Copyright: © 2025 alessandrasala79
 
 
 We only used the train dataset as it was the only one labeled.
-
-## Online Demo
-You can try an online demo in:
-[URL]
 
 ## Getting Started
 
