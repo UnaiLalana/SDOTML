@@ -7,11 +7,23 @@ Authors: Unai Lalana Morales and Eneko Isturitz Sesma
 SDOTML aims to bridge the gap between traditional software engineering and modern machine learning practices. It covers best practices, design patterns, and tools to build robust, maintainable, and scalable ML-driven applications.
 In this project we will create a NN capable of predicting whether an image is AI generated or not.
 
+
+## License
+This project (code and demo) is licensed under the [MIT License](./LICENSE).
+
 ## Data Source
 
+
 The dataset used for this project was sourced from Kaggle.
-https://www.kaggle.com/datasets/alessandrasala79/ai-vs-human-generated-dataset
+
+Dataset: AI vs. Human-Generated Images
+Source: https://www.kaggle.com/datasets/alessandrasala79/ai-vs-human-generated-dataset
+License: Apache License 2.0
+Copyright: © 2025 alessandrasala79
+
+
 We only used the train dataset as it was the only one labeled.
+
 ## Online Demo
 You can try an online demo in:
 [URL]

@@ -2,6 +2,7 @@
 name = "sdotml"
 version = "0.1.0"
 description = "Image classification: AI-generated vs human-created"
+license = { text = "MIT" }
 readme = "README.md"
 authors = [
     { name = "Unai Lalana" },
